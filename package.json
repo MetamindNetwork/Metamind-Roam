@@ -1,7 +1,7 @@
 {
   "name": "metamind-roam",
   "version": "1.0.0",
-  "description": "A Roam Research plugin that helps the users to sync/publish the graph on the Metamind platform.",
+  "description": "A Roam plugin that helps you track and catalogue the work you do on your graph and (soon) can publish graph directly to Metamind platform.",
   "main": "./build/main.js",
   "scripts": {
     "prebuild:roam": "npm install",
