@@ -87,20 +87,13 @@ const GraphPublishingWidget = (extensionAPI: OnloadArgs["extensionAPI"]) => () =
       />
       <Button
         text="Sync Graph with Metamind Servers"
+        disabled={tokenSwitch}
         onClick={handleSync}
-        style={{ color: "#FFFFFF", fontWeight: "bold" }}
+        style={{
+          color: tokenSwitch ? "#374752" : "#FFFFFF",
+          fontWeight: "bold"
+        }}
       />
-      <div style={{ padding: "2rem", display: "flex", flexDirection: "row" }}>
-        <input
-          type="checkbox"
-          checked={false}
-          disabled={true}
-          style={{ padding: "0.5rem" }}
-        />
-        <label style={{ paddingLeft: "0.5rem", fontWeight: "bold" }}>
-          Publish to the Metamind App (Coming Soon!)
-        </label>
-      </div>
     </div>
   );
 }

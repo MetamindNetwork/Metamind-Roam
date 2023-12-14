@@ -6,9 +6,16 @@ import type { OnloadArgs } from "roamjs-components/types/native";
 import { generatePages } from "../utils";
 
 const PageGenerationWidget = (extensionAPI: OnloadArgs["extensionAPI"]) => () => {
+  const [tokenSwitch, setTokenSwitch] = React.useState(false);
   const [isToggled, setIsToggled] = React.useState(false);
+
   React.useEffect(() => {
     const graphName = window.roamAlphaAPI.graph.name;
+
+    const tokenSwitchValue = extensionAPI.settings.get(`${graphName}_graphgator_token`);
+    const tokenSwitchString = (typeof tokenSwitchValue === 'boolean') ? tokenSwitchValue : false;
+    setTokenSwitch(tokenSwitchString);
+
     const indexPageToggleFlag = extensionAPI.settings.get(`${graphName}_indexPage`);
     const indexPage = (typeof indexPageToggleFlag === 'string' && indexPageToggleFlag !== '') ? JSON.parse(indexPageToggleFlag) : false;
     setIsToggled(indexPage);
@@ -35,8 +42,13 @@ const PageGenerationWidget = (extensionAPI: OnloadArgs["extensionAPI"]) => () =>
     <div style={{ display: "flex", flexDirection: "column" }}>
       <Button
         text="Generate New Update Log and Index Page"
+        disabled={!tokenSwitch}
         onClick={generatePage}
-        style={{ color: "#FFFFFF", fontWeight: "bold", borderRadius: "0.5rem" }}
+        style={{
+          color: tokenSwitch ? "#FFFFFF" : "#374752",
+          fontWeight: "bold",
+          borderRadius: "0.5rem"
+        }}
       />
       <div style={{ padding: "2rem" }}>
         <input type="checkbox" checked={isToggled} onChange={handleToggle} style={{ padding: "0.5rem" }} />
