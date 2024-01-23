@@ -1,0 +1,30 @@
+#metamind-roam-topbar {
+    border-radius: 8px;
+    font-size: 12px;
+    color: #748FA2;
+    font-weight: 600;
+    line-height: 15.97px;
+    border-width: 1px;
+}
+
+.black-button {
+    border-radius: 8px;
+    font-size: 12px;
+    color: #FFFFFF;
+    font-weight: 600;
+    line-height: 15.97px;
+    border-width: 1px;
+    background-color: #374752;
+    margin-left: 5px;
+}
+
+.light-button {
+    border-radius: 8px;
+    font-size: 12px;
+    color: #374752;
+    font-weight: 600;
+    line-height: 15.97px;
+    border-width: 1px;
+    background-color:#D1DAE0;
+    margin-left: 5px;
+}
