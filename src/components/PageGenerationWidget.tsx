@@ -28,13 +28,11 @@ const PageGenerationWidget = (extensionAPI: OnloadArgs["extensionAPI"]) => () =>
   };
 
   const generatePage = () => {
-    const res = generatePages(isToggled);
-    res.then(() => {
-      renderToast({
-        content: "Pages are being generated!",
-        intent: "primary",
-        id: "roam-js-graphgator"
-      });
+    const pageTitle = generatePages();
+    renderToast({
+      content: "Pages are being generated!",
+      intent: "primary",
+      id: "roam-js-graphgator"
     });
   };
 
