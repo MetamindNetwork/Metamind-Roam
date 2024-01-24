@@ -2,9 +2,8 @@ import PageGenerationWidget from "./components/PageGenerationWidget";
 import GraphPublishingWidget from "./components/GraphPublishingWidget";
 import GraphSyncWidget from "./components/GraphSyncWidget";
 import EmptyComponent from "./components/EmptyComponent";
-import { generatePages } from "./utils";
+import { generatePages, postGraph } from "./utils";
 import getBlockUidByTextOnPage from "roamjs-components/queries/getBlockUidByTextOnPage";
-import { deleteBlock } from "roamjs-components/writes";
 
 export default {
   onload: ({ extensionAPI }: { extensionAPI: any }) => {
@@ -60,8 +59,7 @@ export default {
     };
     extensionAPI.settings.panel.create(config);
 
-    const addMetamindRoamButton = () => {
-
+    const initializeMetamindRoamToolbar = () => {
       // Publish button for the topbar
       const mCancelButton = document.createElement("button");
       mCancelButton.id = "metamind-roam-cancel";
@@ -75,12 +73,30 @@ export default {
         saveButtonById.setAttribute("disabled", "");
         let pageTitle = mCancelButton.getAttribute("page-title");
         // Delete the block first and then the page
-        let blockUid = getBlockUidByTextOnPage({ text: `**All New Mentions within [[${pageTitle}]]**`, title: "M/Graph Home" });
-        console.log(blockUid);
-        await window.roamAlphaAPI.deleteBlock({block: {uid:`${blockUid}`}});
-        let pageUID = await window.roamAlphaAPI.q(`[:find ?uid :where [?e :node/title "${pageTitle}"][?e :block/uid ?uid ] ]`);
-        await window.roamAlphaAPI.deletePage({page: {uid:`${pageUID}`}});
-        window.roamAlphaAPI.ui.rightSidebar.close()
+
+        const blockText = `[[${pageTitle}]]\n**Title** :\n**Date** : [[${new Date().toLocaleDateString(
+          "en-US",
+          { year: "numeric", month: "long", day: "2-digit" }
+        )}]]`;
+        let updateLogBlockUid = getBlockUidByTextOnPage({
+          text: blockText,
+          title: "M/Update Logs",
+        });
+        await window.roamAlphaAPI.deleteBlock({
+          block: { uid: `${updateLogBlockUid}` },
+        });
+        let homeGraphblockUid = getBlockUidByTextOnPage({
+          text: `**All New Mentions within [[${pageTitle}]]**`,
+          title: "M/Graph Home",
+        });
+        await window.roamAlphaAPI.deleteBlock({
+          block: { uid: `${homeGraphblockUid}` },
+        });
+        let pageUID = await window.roamAlphaAPI.q(
+          `[:find ?uid :where [?e :node/title "${pageTitle}"][?e :block/uid ?uid ] ]`
+        );
+        await window.roamAlphaAPI.deletePage({ page: { uid: `${pageUID}` } });
+        window.roamAlphaAPI.ui.rightSidebar.close();
         window.roamAlphaAPI.ui.mainWindow.openDailyNotes();
       });
 
@@ -91,9 +107,15 @@ export default {
       mReviewButton.className = "black-button";
       mReviewButton.addEventListener("click", async () => {
         const pageTitle = await generatePages();
-        await window.roamAlphaAPI.ui.mainWindow.openPage({ page: { 'title': `${pageTitle}` } });
-        let pageUID = await window.roamAlphaAPI.q(`[:find ?uid :where [?e :node/title "M/Graph Home"][?e :block/uid ?uid ] ]`);
-        await window.roamAlphaAPI.ui.rightSidebar.addWindow({ window: { 'type': 'outline', 'block-uid': `${pageUID}` } });
+        await window.roamAlphaAPI.ui.mainWindow.openPage({
+          page: { title: `${pageTitle}` },
+        });
+        let pageUID = await window.roamAlphaAPI.q(
+          `[:find ?uid :where [?e :node/title "M/Graph Home"][?e :block/uid ?uid ] ]`
+        );
+        await window.roamAlphaAPI.ui.rightSidebar.addWindow({
+          window: { type: "outline", "block-uid": `${pageUID}` },
+        });
         let reviewButtonById = document.getElementById("metamind-roam-review");
         mCancelButton.setAttribute("page-title", `${pageTitle}`);
         reviewButtonById.replaceWith(mCancelButton);
@@ -108,6 +130,7 @@ export default {
       mSaveButton.innerText = "Save";
       mSaveButton.className = "light-button";
       mSaveButton.addEventListener("click", async () => {
+        await postGraph('', '');
         let cancelButtonById = document.getElementById("metamind-roam-cancel");
         cancelButtonById.replaceWith(mReviewButton);
         let saveButtonById = document.getElementById("metamind-roam-save");
@@ -132,7 +155,6 @@ export default {
       graphDiv.appendChild(mReviewButton);
       graphDiv.appendChild(mSaveButton);
       graphDiv.appendChild(mPublishButton);
-
 
       if (document.querySelector(".rm-open-left-sidebar-btn")) {
         // the sidebar is closed
@@ -180,6 +202,6 @@ export default {
         }
       }
     };
-    addMetamindRoamButton();
+    initializeMetamindRoamToolbar();
   },
 };
