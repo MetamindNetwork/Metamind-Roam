@@ -15,9 +15,7 @@ export default {
           id: "graphgator-setup",
           name: "SETUP AND INSTALL",
           description:
-            "Generate a New API Token from the Graph Tab. Copy and Paste it here, and save it somewhere safely. \
-            You can now sync the graph to our servers and go back to doing your work on the graph. From now on, \
-            whenever you want to track your work, come back here and follow the first 3 steps above.",
+            "",
           action: {
             type: "reactComponent",
             component: GraphPublishingWidget(extensionAPI),

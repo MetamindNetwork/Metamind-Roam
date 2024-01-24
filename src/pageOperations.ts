@@ -12,7 +12,7 @@ import {
   convertToMilisecond,
   getDatePages,
 } from "./utils";
-import { homeGraphPageMentions, homeGraphPageTitle, updateLogPageMentions, updateLogPageTitle } from "./metamindStrings";
+import { getRoamDateFormat, homeGraphPageMentions, homeGraphPageTitle, updateLogPageMentions, updateLogPageTitle } from "./metamindStrings";
 
 export const createIndexPage = (
   newPages: Array<string>,
@@ -164,9 +164,7 @@ export const createUpdateLogPage = (
   let renamedPages: any = [];
   let lastRunMiliSeconds = lastRunSeconds * 1000;
   let date = convertToMilisecond(lastRunMiliSeconds);
-  let formattedDate = `${date.getDate()} ${date.toLocaleString("default", {
-    month: "long",
-  })}, ${date.getFullYear()}`;
+  let formattedDate = getRoamDateFormat(date);
   let newPages = getDateFilteredPages(lastRunMiliSeconds);
   // TODO: Add more such pages to be removed.
   newPages = _.without(newPages, pageTitle, "Index Page");

@@ -9,3 +9,7 @@ export const updateLogPageMentions = (pageTitle: string) => {
     const blockText = `[[${pageTitle}]]\n**Title** :\n**Date** : [[${window.roamAlphaAPI.util.dateToPageTitle(new Date())}]]`;
     return blockText;
 }
+
+export const getRoamDateFormat = (date: Date) => {
+    return window.roamAlphaAPI.util.dateToPageTitle(date);
+}
