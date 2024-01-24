@@ -2,6 +2,7 @@ import PageGenerationWidget from "./components/PageGenerationWidget";
 import GraphPublishingWidget from "./components/GraphPublishingWidget";
 import GraphSyncWidget from "./components/GraphSyncWidget";
 import EmptyComponent from "./components/EmptyComponent";
+import { generatePages } from "./utils";
 
 export default {
   onload: ({ extensionAPI }: { extensionAPI: any }) => {
@@ -59,17 +60,12 @@ export default {
 
     const addMetamindRoamButton = () => {
 
-      let pageCreated = "";
-      let pageCreatedUID = "";
-      let indexPageBlockUID = "";
-
       // Publish button for the topbar
       const mCancelButton = document.createElement("button");
       mCancelButton.id = "metamind-roam-cancel";
       mCancelButton.innerText = "Cancel";
       mCancelButton.className = "light-button";
       mCancelButton.addEventListener("click", async () => {
-        console.log("clicked");
         let cancelButtonById = document.getElementById("metamind-roam-cancel");
         cancelButtonById.replaceWith(mReviewButton);
         let saveButtonById = document.getElementById("metamind-roam-save");
@@ -85,11 +81,13 @@ export default {
       mReviewButton.innerText = "M/Review";
       mReviewButton.className = "black-button";
       mReviewButton.addEventListener("click", async () => {
-        console.log("clicked");
-        await window.roamAlphaAPI.ui.mainWindow.openPage({ page: { 'title': 'Update No. #2' } });
-        let pageUID = await window.roamAlphaAPI.q(`[:find ?uid :where [?e :node/title "M/Index Page"][?e :block/uid ?uid ] ]`);
+        const pageTitle = await generatePages(true);
+        await window.roamAlphaAPI.ui.mainWindow.openPage({ page: { 'title': `${pageTitle}` } });
+        let pageUID = await window.roamAlphaAPI.q(`[:find ?uid :where [?e :node/title "M/Graph Home"][?e :block/uid ?uid ] ]`);
         await window.roamAlphaAPI.ui.rightSidebar.addWindow({ window: { 'type': 'outline', 'block-uid': `${pageUID}` } });
         let reviewButtonById = document.getElementById("metamind-roam-review");
+        mCancelButton.setAttribute("page-title", `${pageTitle}`);
+        mCancelButton.setAttribute("home-block-uid", "" );
         reviewButtonById.replaceWith(mCancelButton);
         let saveButtonById = document.getElementById("metamind-roam-save");
         saveButtonById.className = "black-button";
@@ -102,7 +100,6 @@ export default {
       mSaveButton.innerText = "Save";
       mSaveButton.className = "light-button";
       mSaveButton.addEventListener("click", async () => {
-        console.log("clicked");
         let cancelButtonById = document.getElementById("metamind-roam-cancel");
         cancelButtonById.replaceWith(mReviewButton);
         let saveButtonById = document.getElementById("metamind-roam-save");
