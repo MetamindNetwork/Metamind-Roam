@@ -3,6 +3,8 @@ import GraphPublishingWidget from "./components/GraphPublishingWidget";
 import GraphSyncWidget from "./components/GraphSyncWidget";
 import EmptyComponent from "./components/EmptyComponent";
 import { generatePages } from "./utils";
+import getBlockUidByTextOnPage from "roamjs-components/queries/getBlockUidByTextOnPage";
+import { deleteBlock } from "roamjs-components/writes";
 
 export default {
   onload: ({ extensionAPI }: { extensionAPI: any }) => {
@@ -71,6 +73,13 @@ export default {
         let saveButtonById = document.getElementById("metamind-roam-save");
         saveButtonById.className = "light-button";
         saveButtonById.setAttribute("disabled", "");
+        let pageTitle = mCancelButton.getAttribute("page-title");
+        // Delete the block first and then the page
+        let blockUid = getBlockUidByTextOnPage({ text: `**All New Mentions within [[${pageTitle}]]**`, title: "M/Graph Home" });
+        console.log(blockUid);
+        await window.roamAlphaAPI.deleteBlock({block: {uid:`${blockUid}`}});
+        let pageUID = await window.roamAlphaAPI.q(`[:find ?uid :where [?e :node/title "${pageTitle}"][?e :block/uid ?uid ] ]`);
+        await window.roamAlphaAPI.deletePage({page: {uid:`${pageUID}`}});
         window.roamAlphaAPI.ui.rightSidebar.close()
         window.roamAlphaAPI.ui.mainWindow.openDailyNotes();
       });
@@ -81,13 +90,12 @@ export default {
       mReviewButton.innerText = "M/Review";
       mReviewButton.className = "black-button";
       mReviewButton.addEventListener("click", async () => {
-        const pageTitle = await generatePages(true);
+        const pageTitle = await generatePages();
         await window.roamAlphaAPI.ui.mainWindow.openPage({ page: { 'title': `${pageTitle}` } });
         let pageUID = await window.roamAlphaAPI.q(`[:find ?uid :where [?e :node/title "M/Graph Home"][?e :block/uid ?uid ] ]`);
         await window.roamAlphaAPI.ui.rightSidebar.addWindow({ window: { 'type': 'outline', 'block-uid': `${pageUID}` } });
         let reviewButtonById = document.getElementById("metamind-roam-review");
         mCancelButton.setAttribute("page-title", `${pageTitle}`);
-        mCancelButton.setAttribute("home-block-uid", "" );
         reviewButtonById.replaceWith(mCancelButton);
         let saveButtonById = document.getElementById("metamind-roam-save");
         saveButtonById.className = "black-button";

@@ -167,7 +167,7 @@ const getAllData = () => {
   return graphData;
 };
 
-export const generatePages = async (createIndexPageFlag: boolean) => {
+export const generatePages = async () => {
   const graph = getAllData();
   let options = {
     method: "POST",
@@ -182,8 +182,8 @@ export const generatePages = async (createIndexPageFlag: boolean) => {
   let response = await res.json();
   const lastRun = response["last_run"];
   const numberOfSync = response["number_of_sync"] + 1;
-  createIndexPage(createIndexPageFlag);
-  const pageTitle = createUpdateLogPage(lastRun, numberOfSync);
+  const {pageTitle, newPages, datePages} = createUpdateLogPage(lastRun, numberOfSync);
+  createIndexPage(newPages, datePages, pageTitle);
   return pageTitle;
 };
 

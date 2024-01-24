@@ -13,49 +13,55 @@ import {
   getDatePages,
 } from "./utils";
 
-export const createIndexPage = (createIndexPageIsManual: boolean) => {
+export const createIndexPage = (
+  newPages: Array<string>,
+  datePages: Array<string>,
+  pageTitle: string
+) => {
   const indexPageName = `M/Graph Home`;
-  let allPages = getRecentEditedPages();
+  let allPages = [...newPages, ...datePages]; //getRecentEditedPages();
   allPages = _.without(allPages, indexPageName);
-  const pageUid = getPageUidByPageTitle(indexPageName);
-  if (pageUid === "" && createIndexPageIsManual) {
-    Promise.all([createPage({ title: indexPageName })]);
-  }
-  if (!createIndexPageIsManual) {
-    Promise.all([createPage({ title: indexPageName })])
-      .then((data) => {
-        const pageUide = data[0];
-        allPages.forEach((ele: any, i: any) => {
+  let blockTitle = `All New Mentions within [[${pageTitle}]]`;
+
+  Promise.all([createPage({ title: indexPageName })])
+    .then((data) => {
+      const pageUide = data[0];
+      createBlock({
+        node: { text: `**${blockTitle}**`, heading: 2 },
+        parentUid: pageUide,
+      }).then((data) => {
+        const blockUid = data;
+        allPages.forEach((ele, i) => {
           createBlock({
             node: { text: `[[${ele}]]` },
-            parentUid: pageUide,
+            parentUid: blockUid,
             order: i + 1,
           });
         });
-      })
-      .catch((e) => {
-        const pageUid = getPageUidByPageTitle(indexPageName);
-        const indexBlocks = getBasicTreeByParentUid(pageUid);
-        let deletedBlocks: Promise<string | number>[] = [];
-        indexBlocks.forEach((block) => {
-          deletedBlocks.push(deleteBlock(block.uid));
-        });
-        Promise.all(deletedBlocks).then((data) => {
-          renderToast({
-            content: "Regenerating the index page!",
-            intent: "warning",
-            id: "roam-js-graphgator-index-page",
-          });
-          allPages.forEach((ele, i) => {
-            createBlock({
-              node: { text: `[[${ele}]]` },
-              parentUid: pageUid,
-              order: i + 1,
-            });
+      });
+    })
+    .catch((e) => {
+      const pageUid = getPageUidByPageTitle(indexPageName);
+      createBlock({
+        node: { text: `**${blockTitle}**`, heading: 2 },
+        parentUid: pageUid,
+      }).then((data) => {
+        const blockUid = data;
+        allPages.forEach((ele, i) => {
+          createBlock({
+            node: { text: `[[${ele}]]` },
+            parentUid: blockUid,
+            order: i + 1,
           });
         });
       });
-  }
+    });
+
+  renderToast({
+    content: "Generating the Graph Home page!",
+    intent: "warning",
+    id: "roam-js-graphgator-index-page",
+  });
 };
 
 const createBlocks = (
@@ -129,7 +135,10 @@ const createBlocks = (
   // Date Pages
   Promise.all([
     createBlock({
-      node: { text: `**Daily Page Entries since** [[${formattedDate}]]`, heading: 2 },
+      node: {
+        text: `**Daily Page Entries since** [[${formattedDate}]]`,
+        heading: 2,
+      },
       parentUid: pageUid,
       order: 3,
     }),
@@ -224,7 +233,7 @@ export const createUpdateLogPage = (
         );
       });
     });
-    return pageTitle;
+  return { pageTitle, newPages, renamedPages, modifiedPages, datePages };
 };
 
 export const generateUpdateLogIndexPage = (
