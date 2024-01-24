@@ -4,7 +4,7 @@ import GraphSyncWidget from "./components/GraphSyncWidget";
 import EmptyComponent from "./components/EmptyComponent";
 import { generatePages, postGraph } from "./utils";
 import getBlockUidByTextOnPage from "roamjs-components/queries/getBlockUidByTextOnPage";
-import { homeGraphPageMentions, homeGraphPageTitle, updateLogPageTitle } from "./metamindStrings";
+import { homeGraphPageMentions, homeGraphPageTitle, updateLogPageMentions, updateLogPageTitle } from "./metamindStrings";
 
 export default {
   onload: ({ extensionAPI }: { extensionAPI: any }) => {
@@ -193,10 +193,7 @@ async function openRelatedPagesInPane() {
 }
 
 async function deleteBlockPages(pageTitle: string) {
-  const blockText = `[[${pageTitle}]]\n**Title** :\n**Date** : [[${new Date().toLocaleDateString(
-    "en-US",
-    { year: "numeric", month: "long", day: "2-digit" }
-  )}]]`;
+  const blockText = updateLogPageMentions(pageTitle);
   let updateLogBlockUid = getBlockUidByTextOnPage({
     text: blockText,
     title: updateLogPageTitle,
