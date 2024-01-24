@@ -73,31 +73,7 @@ export default {
         saveButtonById.setAttribute("disabled", "");
         let pageTitle = mCancelButton.getAttribute("page-title");
         // Delete the block first and then the page
-
-        const blockText = `[[${pageTitle}]]\n**Title** :\n**Date** : [[${new Date().toLocaleDateString(
-          "en-US",
-          { year: "numeric", month: "long", day: "2-digit" }
-        )}]]`;
-        let updateLogBlockUid = getBlockUidByTextOnPage({
-          text: blockText,
-          title: "M/Update Logs",
-        });
-        await window.roamAlphaAPI.deleteBlock({
-          block: { uid: `${updateLogBlockUid}` },
-        });
-        let homeGraphblockUid = getBlockUidByTextOnPage({
-          text: `**All New Mentions within [[${pageTitle}]]**`,
-          title: "M/Graph Home",
-        });
-        await window.roamAlphaAPI.deleteBlock({
-          block: { uid: `${homeGraphblockUid}` },
-        });
-        let pageUID = await window.roamAlphaAPI.q(
-          `[:find ?uid :where [?e :node/title "${pageTitle}"][?e :block/uid ?uid ] ]`
-        );
-        await window.roamAlphaAPI.deletePage({ page: { uid: `${pageUID}` } });
-        window.roamAlphaAPI.ui.rightSidebar.close();
-        window.roamAlphaAPI.ui.mainWindow.openDailyNotes();
+        await deleteBlockPages(pageTitle);
       });
 
       // M/Review Button for the topbar
@@ -106,16 +82,7 @@ export default {
       mReviewButton.innerText = "M/Review";
       mReviewButton.className = "black-button";
       mReviewButton.addEventListener("click", async () => {
-        const pageTitle = await generatePages();
-        await window.roamAlphaAPI.ui.mainWindow.openPage({
-          page: { title: `${pageTitle}` },
-        });
-        let pageUID = await window.roamAlphaAPI.q(
-          `[:find ?uid :where [?e :node/title "M/Graph Home"][?e :block/uid ?uid ] ]`
-        );
-        await window.roamAlphaAPI.ui.rightSidebar.addWindow({
-          window: { type: "outline", "block-uid": `${pageUID}` },
-        });
+        const pageTitle = await openRelatedPagesInPane();
         let reviewButtonById = document.getElementById("metamind-roam-review");
         mCancelButton.setAttribute("page-title", `${pageTitle}`);
         reviewButtonById.replaceWith(mCancelButton);
@@ -156,6 +123,9 @@ export default {
       graphDiv.appendChild(mSaveButton);
       graphDiv.appendChild(mPublishButton);
 
+      /**
+       * DIrect inspiration and the usage of toolbar is taken from github.com/mlava/workspaces
+       */
       if (document.querySelector(".rm-open-left-sidebar-btn")) {
         // the sidebar is closed
         if (document.querySelector("#todayTomorrow")) {
@@ -205,3 +175,46 @@ export default {
     initializeMetamindRoamToolbar();
   },
 };
+
+
+async function openRelatedPagesInPane() {
+  const pageTitle = await generatePages();
+  await window.roamAlphaAPI.ui.mainWindow.openPage({
+    page: { title: `${pageTitle}` },
+  });
+  let pageUID = await window.roamAlphaAPI.q(
+    `[:find ?uid :where [?e :node/title "M/Graph Home"][?e :block/uid ?uid ] ]`
+  );
+  await window.roamAlphaAPI.ui.rightSidebar.addWindow({
+    window: { type: "outline", "block-uid": `${pageUID}` },
+  });
+  return pageTitle;
+}
+
+async function deleteBlockPages(pageTitle: string) {
+  const blockText = `[[${pageTitle}]]\n**Title** :\n**Date** : [[${new Date().toLocaleDateString(
+    "en-US",
+    { year: "numeric", month: "long", day: "2-digit" }
+  )}]]`;
+  let updateLogBlockUid = getBlockUidByTextOnPage({
+    text: blockText,
+    title: "M/Update Logs",
+  });
+  await window.roamAlphaAPI.deleteBlock({
+    block: { uid: `${updateLogBlockUid}` },
+  });
+  let homeGraphblockUid = getBlockUidByTextOnPage({
+    text: `**All New Mentions within [[${pageTitle}]]**`,
+    title: "M/Graph Home",
+  });
+  await window.roamAlphaAPI.deleteBlock({
+    block: { uid: `${homeGraphblockUid}` },
+  });
+  let pageUID = await window.roamAlphaAPI.q(
+    `[:find ?uid :where [?e :node/title "${pageTitle}"][?e :block/uid ?uid ] ]`
+  );
+  await window.roamAlphaAPI.deletePage({ page: { uid: `${pageUID}` } });
+  window.roamAlphaAPI.ui.rightSidebar.close();
+  window.roamAlphaAPI.ui.mainWindow.openDailyNotes();
+}
+
