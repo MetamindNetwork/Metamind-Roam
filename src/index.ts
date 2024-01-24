@@ -4,6 +4,7 @@ import GraphSyncWidget from "./components/GraphSyncWidget";
 import EmptyComponent from "./components/EmptyComponent";
 import { generatePages, postGraph } from "./utils";
 import getBlockUidByTextOnPage from "roamjs-components/queries/getBlockUidByTextOnPage";
+import { homeGraphPageMentions, homeGraphPageTitle, updateLogPageTitle } from "./metamindStrings";
 
 export default {
   onload: ({ extensionAPI }: { extensionAPI: any }) => {
@@ -124,7 +125,7 @@ export default {
       graphDiv.appendChild(mPublishButton);
 
       /**
-       * DIrect inspiration and the usage of toolbar is taken from github.com/mlava/workspaces
+       * Direct inspiration and the usage of toolbar is taken from github.com/mlava/workspaces
        */
       if (document.querySelector(".rm-open-left-sidebar-btn")) {
         // the sidebar is closed
@@ -198,14 +199,14 @@ async function deleteBlockPages(pageTitle: string) {
   )}]]`;
   let updateLogBlockUid = getBlockUidByTextOnPage({
     text: blockText,
-    title: "M/Update Logs",
+    title: updateLogPageTitle,
   });
   await window.roamAlphaAPI.deleteBlock({
     block: { uid: `${updateLogBlockUid}` },
   });
   let homeGraphblockUid = getBlockUidByTextOnPage({
-    text: `**All New Mentions within [[${pageTitle}]]**`,
-    title: "M/Graph Home",
+    text: homeGraphPageMentions(pageTitle),
+    title: homeGraphPageTitle,
   });
   await window.roamAlphaAPI.deleteBlock({
     block: { uid: `${homeGraphblockUid}` },

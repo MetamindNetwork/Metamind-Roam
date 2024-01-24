@@ -12,16 +12,17 @@ import {
   convertToMilisecond,
   getDatePages,
 } from "./utils";
+import { homeGraphPageMentions, homeGraphPageTitle, updateLogPageMentions, updateLogPageTitle } from "./metamindStrings";
 
 export const createIndexPage = (
   newPages: Array<string>,
   datePages: Array<string>,
   pageTitle: string
 ) => {
-  const indexPageName = `M/Graph Home`;
+  const indexPageName = homeGraphPageTitle;
   let allPages = [...newPages, ...datePages]; //getRecentEditedPages();
   allPages = _.without(allPages, indexPageName);
-  let blockTitle = `All New Mentions within [[${pageTitle}]]`;
+  let blockTitle = homeGraphPageMentions(pageTitle);
 
   Promise.all([createPage({ title: indexPageName })])
     .then((data) => {
@@ -43,7 +44,7 @@ export const createIndexPage = (
     .catch((e) => {
       const pageUid = getPageUidByPageTitle(indexPageName);
       createBlock({
-        node: { text: `**${blockTitle}**`, heading: 2 },
+        node: { text: `${blockTitle}`, heading: 2 },
         parentUid: pageUid,
       }).then((data) => {
         const blockUid = data;
@@ -240,7 +241,7 @@ export const generateUpdateLogIndexPage = (
   updatePageTitle: string,
   updateLogPageUid: string
 ) => {
-  const pageTitle = `M/Update Logs`;
+  const pageTitle = updateLogPageTitle;
   const pageUid = getPageUidByPageTitle(pageTitle);
   if (pageUid === "") {
     Promise.all([createPage({ title: pageTitle })]).then((data) => {
@@ -263,10 +264,7 @@ function createUpdateLogBlock(
   pageUid: string,
   updateLogPageUid: string
 ) {
-  const blockText = `[[${updatePageTitle}]]\n**Title** :\n**Date** : [[${new Date().toLocaleDateString(
-    "en-US",
-    { year: "numeric", month: "long", day: "2-digit" }
-  )}]]`;
+  const blockText = updateLogPageMentions(updatePageTitle);
   const blockUid = getBlockUidByTextOnPage({
     text: blockText,
     title: pageTitle,
