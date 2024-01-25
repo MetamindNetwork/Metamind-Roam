@@ -4,6 +4,7 @@ import getCurrentUserDisplayName from "roamjs-components/queries/getCurrentUserD
 import getCurrentUserEmail from "roamjs-components/queries/getCurrentUserEmail";
 import { SERVER_URL } from "./constants";
 import { createIndexPage, createUpdateLogPage } from "./pageOperations";
+import renderToast from "roamjs-components/components/Toast";
 
 export const convertToMilisecond = (stringDate: string | number) => {
   return new Date(Number(stringDate));
@@ -182,8 +183,19 @@ export const generatePages = async () => {
   let response = await res.json();
   const lastRun = response["last_run"];
   const numberOfSync = response["number_of_sync"] + 1;
+
+  renderToast({
+    content: "Metamind : Generating a New Update Log...",
+    intent: "primary",
+    id: "roam-js-graphgator-index-page",
+  });
   const {pageTitle, newPages, datePages} = createUpdateLogPage(lastRun, numberOfSync);
   createIndexPage(newPages, datePages, pageTitle);
+  renderToast({
+    content: "Done! Review the update log!.",
+    intent: "primary",
+    id: "roam-js-graphgator-index-page",
+  });
   return pageTitle;
 };
 
@@ -202,5 +214,43 @@ export const postGraph = async (token: string, description: string) => {
     body: JSON.stringify(graph),
   };
   let response = await fetch(`${SERVER_URL}/graph/`, options);
+  renderToast({
+    content: "Saved! Go back to working your graph & review updates when you wish..",
+    intent: "primary",
+    id: "roam-js-graphgator-index-page",
+  });
+  renderToast({
+    content: "Metamind : (Soon) Publish your Content as a Graph. Sign up in Plugin page!.",
+    intent: "primary",
+    id: "roam-js-graphgator-index-page",
+  });
+  return response;
+};
+
+// Post the graph data to the server so that the server can sync the graph
+// and be ready to publish it.
+export const initilizeGraph = async (token: string, description: string) => {
+  let graph: any = getAllData();
+  graph = { ...graph, token, description };
+  let options = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Access-Control-Request-Headers": "*",
+      "Access-Control-Request-Method": "*",
+    },
+    body: JSON.stringify(graph),
+  };
+  let response = await fetch(`${SERVER_URL}/graph/init/`, options);
+  renderToast({
+    content: "State saved, Graph Initialized! Good to go! 🚀",
+    intent: "primary",
+    id: "roam-js-graphgator-index-page",
+  });
+  renderToast({
+    content: "Metamind : (Soon) Publish your Content as a Graph. Sign up in Plugin page!.",
+    intent: "primary",
+    id: "roam-js-graphgator-index-page",
+  });
   return response;
 };

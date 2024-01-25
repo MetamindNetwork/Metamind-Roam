@@ -20,7 +20,8 @@ export const createIndexPage = (
   pageTitle: string
 ) => {
   const indexPageName = homeGraphPageTitle;
-  let allPages = [...newPages, ...datePages]; //getRecentEditedPages();
+  let allPagesWithDuplicates = new Set([...newPages, ...datePages]);
+  let allPages = [...allPagesWithDuplicates];
   allPages = _.without(allPages, indexPageName);
   let blockTitle = homeGraphPageMentions(pageTitle);
 
@@ -57,12 +58,6 @@ export const createIndexPage = (
         });
       });
     });
-
-  renderToast({
-    content: "Generating the Graph Home page!",
-    intent: "warning",
-    id: "roam-js-graphgator-index-page",
-  });
 };
 
 const createBlocks = (
@@ -216,11 +211,6 @@ export const createUpdateLogPage = (
         deletedBlocks.push(deleteBlock(block.uid));
       });
       Promise.all(deletedBlocks).then((data) => {
-        renderToast({
-          content: `Regenerating the Update Log for ${pageTitle}`,
-          intent: "warning",
-          id: "roam-js-graphgator-log-page",
-        });
         generateUpdateLogIndexPage(pageTitle, pageUid);
         createBlocks(
           pageUid,

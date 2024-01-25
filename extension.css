@@ -28,3 +28,12 @@
     background-color: #D1DAE0;
     margin-left: 5px;
 }
+
+.info-text {
+    color: #A2B4C1;
+    font-size: 15px;
+    font-weight: bolder;
+    line-height: 20px;
+    letter-spacing: 0px;
+    text-align: center;
+}
