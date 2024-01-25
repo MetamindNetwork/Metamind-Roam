@@ -3,10 +3,8 @@ import getPageUidByPageTitle from "roamjs-components/queries/getPageUidByPageTit
 import getBasicTreeByParentUid from "roamjs-components/queries/getBasicTreeByParentUid";
 import getBlockUidByTextOnPage from "roamjs-components/queries/getBlockUidByTextOnPage";
 import { createPage, createBlock, deleteBlock } from "roamjs-components/writes";
-import renderToast from "roamjs-components/components/Toast";
 import {
   getRenamedPage,
-  getRecentEditedPages,
   getModifiedPage,
   getDateFilteredPages,
   convertToMilisecond,

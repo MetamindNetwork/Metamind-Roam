@@ -242,15 +242,5 @@ export const initilizeGraph = async (token: string, description: string) => {
     body: JSON.stringify(graph),
   };
   let response = await fetch(`${SERVER_URL}/graph/init/`, options);
-  renderToast({
-    content: "State saved, Graph Initialized! Good to go! 🚀",
-    intent: "primary",
-    id: "roam-js-graphgator-index-page",
-  });
-  renderToast({
-    content: "Metamind : (Soon) Publish your Content as a Graph. Sign up in Plugin page!.",
-    intent: "primary",
-    id: "roam-js-graphgator-index-page",
-  });
   return response;
 };
