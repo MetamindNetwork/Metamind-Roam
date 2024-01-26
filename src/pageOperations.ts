@@ -99,15 +99,20 @@ const createBlocks = async (
     parentUid: pageUid,
     order: 1,
   });
+  await createBlock({
+    node: { text: `**Summary of Update since [${formattedDate}]**`, heading: 3 },
+    parentUid: pageUid,
+    order: 2,
+  });
   // Renamed Pages
   Promise.all([
     createBlock({
       node: {
-        text: `**Renamed Pages since** [[${formattedDate}]]`,
+        text: `**Renamed Pages**`,
         heading: 3,
       },
       parentUid: pageUid,
-      order: 2,
+      order: 3,
     }),
   ]).then((data) => {
     let blockUid = data[0];
@@ -124,11 +129,11 @@ const createBlocks = async (
   Promise.all([
     createBlock({
       node: {
-        text: `**Modified Pages since** [[${formattedDate}]]`,
+        text: `**Modified Pages**`,
         heading: 3,
       },
       parentUid: pageUid,
-      order: 3,
+      order: 4,
     }),
   ]).then((data) => {
     let blockUid = data[0];
@@ -144,9 +149,9 @@ const createBlocks = async (
   // New Pages
   Promise.all([
     createBlock({
-      node: { text: `**New Pages since** [[${formattedDate}]]`, heading: 3 },
+      node: { text: `**New Pages**`, heading: 3 },
       parentUid: pageUid,
-      order: 4,
+      order: 5,
     }),
   ]).then((data) => {
     let blockUid = data[0];
@@ -163,11 +168,11 @@ const createBlocks = async (
   Promise.all([
     createBlock({
       node: {
-        text: `**Daily Page Entries since** [[${formattedDate}]]`,
+        text: `**Daily Page Entries**`,
         heading: 3,
       },
       parentUid: pageUid,
-      order: 5,
+      order: 6,
     }),
   ]).then((data) => {
     let blockUid = data[0];
