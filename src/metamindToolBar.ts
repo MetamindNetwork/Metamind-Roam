@@ -4,7 +4,7 @@ import {
   homeGraphPageMentions,
   homeGraphPageTitle,
   updateLogPageMentions,
-  updateLogPageTitle
+  updateLogPageTitle,
 } from "./metamindStrings";
 
 export function metamindToolBar() {
@@ -58,7 +58,7 @@ export function metamindToolBar() {
   mPublishButton.id = "metamind-roam-publish";
   mPublishButton.innerText = "Publish";
   mPublishButton.className = "light-button";
-  mPublishButton.addEventListener("click", async () => { });
+  mPublishButton.addEventListener("click", async () => {});
   mPublishButton.disabled = true;
 
   const graphDiv = document.createElement("div");
@@ -73,47 +73,52 @@ export function checkToAddToolBar(graphDiv: HTMLDivElement) {
   /**
    * Direct inspiration and the usage of toolbar is taken from github.com/mlava/workspaces
    */
-  if (document.querySelector(".rm-open-left-sidebar-btn")) {
-    // the sidebar is closed
-    if (document.querySelector("#todayTomorrow")) {
-      // Yesterday Tomorrow extension also installed, so place this to right
-      let todayTomorrow = document.querySelector("#todayTomorrow");
-      todayTomorrow.after(graphDiv);
-    } else if (document.querySelector(
-      "span.bp3-button.bp3-minimal.bp3-icon-arrow-right.pointer.bp3-small.rm-electron-nav-forward-btn"
-    )) {
-      // electron client needs separate css
-      let electronArrows = document.getElementsByClassName(
-        "rm-electron-nav-forward-btn"
-      )[0];
-      electronArrows.after(graphDiv);
+  if (document.querySelector("#metamind-roam-topbar") === null) {
+    if (document.querySelector(".rm-open-left-sidebar-btn")) {
+      // the sidebar is closed
+      if (document.querySelector("#todayTomorrow")) {
+        // Yesterday Tomorrow extension also installed, so place this to right
+        let todayTomorrow = document.querySelector("#todayTomorrow");
+        todayTomorrow.after(graphDiv);
+      } else if (
+        document.querySelector(
+          "span.bp3-button.bp3-minimal.bp3-icon-arrow-right.pointer.bp3-small.rm-electron-nav-forward-btn"
+        )
+      ) {
+        // electron client needs separate css
+        let electronArrows = document.getElementsByClassName(
+          "rm-electron-nav-forward-btn"
+        )[0];
+        electronArrows.after(graphDiv);
+      } else {
+        let sidebarButton = document.querySelector(".rm-open-left-sidebar-btn");
+        sidebarButton.after(graphDiv);
+      }
     } else {
-      let sidebarButton = document.querySelector(".rm-open-left-sidebar-btn");
-      sidebarButton.after(graphDiv);
-    }
-  } else {
-    if (document.querySelector("#todayTomorrow")) {
-      // Yesterday Tomorrow extension also installed, so place this to right
-      let todayTomorrow = document.querySelector("#todayTomorrow");
-      todayTomorrow.after(graphDiv);
-    } else if (document.querySelector(
-      "span.bp3-button.bp3-minimal.bp3-icon-arrow-right.pointer.bp3-small.rm-electron-nav-forward-btn"
-    )) {
-      // electron client needs separate css
-      let electronArrows = document.getElementsByClassName(
-        "rm-electron-nav-forward-btn"
-      )[0];
-      electronArrows.after(graphDiv);
-    } else {
-      var topBarContent = document.querySelector(
-        "#app > div > div > div.flex-h-box > div.roam-main > div.rm-files-dropzone > div"
-      );
-      var topBarRow = topBarContent.childNodes[1];
-      topBarRow.parentNode.insertBefore(graphDiv, topBarRow);
+      if (document.querySelector("#todayTomorrow")) {
+        // Yesterday Tomorrow extension also installed, so place this to right
+        let todayTomorrow = document.querySelector("#todayTomorrow");
+        todayTomorrow.after(graphDiv);
+      } else if (
+        document.querySelector(
+          "span.bp3-button.bp3-minimal.bp3-icon-arrow-right.pointer.bp3-small.rm-electron-nav-forward-btn"
+        )
+      ) {
+        // electron client needs separate css
+        let electronArrows = document.getElementsByClassName(
+          "rm-electron-nav-forward-btn"
+        )[0];
+        electronArrows.after(graphDiv);
+      } else {
+        var topBarContent = document.querySelector(
+          "#app > div > div > div.flex-h-box > div.roam-main > div.rm-files-dropzone > div"
+        );
+        var topBarRow = topBarContent.childNodes[1];
+        topBarRow.parentNode.insertBefore(graphDiv, topBarRow);
+      }
     }
   }
 }
-
 async function openRelatedPagesInPane() {
   const pageTitle = await generatePages();
   await window.roamAlphaAPI.ui.mainWindow.openPage({
