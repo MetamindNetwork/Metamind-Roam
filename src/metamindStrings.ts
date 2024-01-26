@@ -1,18 +1,21 @@
-export const updateLogPageTitle = 'M/Update Logs';
-export const homeGraphPageTitle = 'M/Graph Home';
+export const updateLogPageTitle = "M/Update Logs";
+export const homeGraphPageTitle = "M/Graph Home";
 
 export const homeGraphPageMentions = (pageTitle: string) => {
-    return `**All New Mentions within [[${pageTitle}]]**`
-}
+  return `**All New Mentions within [[${pageTitle}]]**`;
+};
 
 export const updateLogPageMentions = (pageTitle: string) => {
-    const blockText = `[[${pageTitle}]]\n**Title** :\n**Date** : [[${window.roamAlphaAPI.util.dateToPageTitle(new Date())}]]`;
-    return blockText;
-}
+  const blockText = `[[${pageTitle}]]\n**Title** :\n**Date** : [[${window.roamAlphaAPI.util.dateToPageTitle(
+    new Date()
+  )}]]`;
+  return blockText;
+};
 
 export const getRoamDateFormat = (date: Date) => {
-    return window.roamAlphaAPI.util.dateToPageTitle(date);
-}
+  let formattedTime = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+  return `${formattedTime}, ${window.roamAlphaAPI.util.dateToPageTitle(date)}`;
+};
 
 export const getUpdateLogInfo = `**How to make use of Update Log info :**
 
@@ -25,7 +28,7 @@ export const getUpdateLogInfo = `**How to make use of Update Log info :**
 
     2. [We](https://www.metamind.network) want to eventually [automate this entire workflow](https://x.com/vgr/status/1541463788058161154) for you. Share Graph API Token in the plugin page for the same.  [Feature request & suggestions here: Discord/Metamind](https://discord.gg/mnYRZPV8sH)
 
-    **Hit “Save” in the top-bar when you're done with both Pages.**`
+    **Hit “Save” in the top-bar when you're done with both Pages.**`;
 
 export const getGraphHomeInfo = `**How to build your Graph Home :**
 
@@ -42,4 +45,4 @@ export const getGraphHomeInfo = `**How to build your Graph Home :**
 2. [We](https://www.metamind.network) want to eventually [automate this entire workflow](https://x.com/vgr/status/1541463788058161154) for you. Share Graph API Token in the plugin page for the same.  [Feature request & suggestions here: Discord/Metamind](https://discord.gg/mnYRZPV8sH)
 
 **Hit “Save” in the top-bar when you're done with both Pages.**
-`
+`;

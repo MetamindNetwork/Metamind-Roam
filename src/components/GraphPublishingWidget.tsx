@@ -82,6 +82,7 @@ const GraphPublishingWidget =
     };
 
     return (
+      <>
       <div style={{ display: "flex", flexDirection: "column" }}>
         <Button
           text="Initialize Metamind Graph!"
@@ -129,10 +130,10 @@ const GraphPublishingWidget =
           }}
         />
         <div className="info-text">
-          API Token from Graph Tab is optional but this will make your graph
-          shareable with the Metamind App and make the plugin run much faster!
+
         </div>
       </div>
+      </>
     );
   };
 
